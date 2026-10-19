@@ -1,0 +1,137 @@
+name: CI
+
+# Runs entirely in sandbox/demo mode: no AI credentials, no real banking, no
+# repository secrets. All passwords below are throwaway, generated per run.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (ruff, mypy, pytest on PostgreSQL, pip-audit)
+    runs-on: ubuntu-24.04  # pinned: ubuntu-latest moves to Ubuntu 26 from 19 Oct 2026
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: lifeline
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: lifeline_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U lifeline -d lifeline_test"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      # CI-only throwaway values; no real financial or AI secrets are needed.
+      LIFELINE_TEST_DATABASE_URL: postgresql+psycopg://lifeline:ci-only-password@localhost:5432/lifeline_test
+      LIFELINE_DATABASE_URL: postgresql+psycopg://lifeline:ci-only-password@localhost:5432/lifeline_test
+      LIFELINE_SANDBOX_EVENT_SECRET: ci-only-sandbox-secret-not-used-anywhere-else
+      LIFELINE_DEMO_PASSWORD: ci-only-demo-password
+      LIFELINE_ENV: test
+      LIFELINE_AI_MODE: demo
+    defaults:
+      run:
+        working-directory: services/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: services/api/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check app tests
+      - run: mypy app
+      - run: python -m pytest -q -p no:cacheprovider
+      - run: pip-audit -r requirements.txt
+
+  frontend:
+    name: Frontend (eslint, tsc, production build, npm audit)
+    runs-on: ubuntu-24.04  # pinned: ubuntu-latest moves to Ubuntu 26 from 19 Oct 2026
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npx tsc --noEmit
+      - run: npm audit --omit=dev
+
+  stack:
+    name: Full stack (Docker Compose, scenario evidence, Playwright)
+    needs: [backend, frontend]
+    runs-on: ubuntu-24.04  # pinned: ubuntu-latest moves to Ubuntu 26 from 19 Oct 2026
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create a throwaway .env (demo mode, random local secrets)
+        run: |
+          {
+            echo "POSTGRES_PASSWORD=$(openssl rand -hex 16)"
+            echo "LIFELINE_ENV=development"
+            echo "LIFELINE_SANDBOX_EVENT_SECRET=$(openssl rand -hex 32)"
+            echo "LIFELINE_DEMO_PASSWORD=Demo-$(openssl rand -hex 12)"
+            echo "LIFELINE_FRESH_ACCOUNT_PASSWORD=Fresh-$(openssl rand -hex 12)"
+            echo "LIFELINE_DEMO_CONTROLS_ENABLED=true"
+            echo "LIFELINE_COOKIE_SECURE=false"
+            echo "LIFELINE_AI_MODE=demo"
+            echo "LIFELINE_FX_PROVIDER=off"  # CI never depends on a live exchange-rate provider
+          } > .env
+          # Mask the generated values in the job log.
+          grep -E '^(POSTGRES_PASSWORD|LIFELINE_SANDBOX_EVENT_SECRET|LIFELINE_DEMO_PASSWORD|LIFELINE_FRESH_ACCOUNT_PASSWORD)=' .env | while IFS='=' read -r _ v; do echo "::add-mask::$v"; done
+
+      - name: Build and start db + api + web (waits for health checks)
+        run: docker compose up -d --build --wait
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install httpx==0.28.1
+
+      - name: Scenario evidence (all Tier 1/2 scenarios, includes a real API restart)
+        run: |
+          set -a; . ./.env; set +a
+          python scripts/run_scenarios.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install Playwright
+        working-directory: apps/web
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Playwright browser journeys against the running stack
+        working-directory: apps/web
+        run: |
+          set -a; . ../../.env; set +a
+          npx playwright test
+
+      - name: Service logs (on failure; contain no secrets or document text)
+        if: failure()
+        run: docker compose logs --no-color --tail 200 api web
+
+      - name: Tear down the ephemeral CI stack
+        if: always()
+        run: docker compose down -v

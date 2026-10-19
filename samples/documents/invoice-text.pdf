@@ -1,0 +1,43 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 271 >>
+stream
+BT /F1 14 Tf 20 TL 60 740 Td (INVOICE) Tj T* (Brightwater Components \(synthetic\)) Tj T* (Invoice No: BW-2026-117) Tj T* (Invoice date: 02 Oct 2026) Tj T* (Due date: 30 Oct 2026) Tj T* (Bill to: Riverside Hotel \(sample\)) Tj T* (Email: accounts@riverside.example) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 287 >>
+stream
+BT /F1 14 Tf 20 TL 60 740 Td (Description   Qty   Unit price   Amount) Tj T* (Cotton towels  120  250.00  30,000.00) Tj T* (Bath robes  40  600.00  24,000.00) Tj T* (Subtotal BDT 54,000.00) Tj T* (VAT \(15%\) 8,100.00) Tj T* (Amount due BDT 62,100.00) Tj T* (Payment terms: net 28) Tj ET
+endstream
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000000317 00000 n 
+0000000639 00000 n 
+0000000765 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+1103
+%%EOF

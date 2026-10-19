@@ -1,0 +1,24 @@
+# Runtime dependencies (exact pins; resolved 2026-10-16 on Python 3.12).
+fastapi==0.143.2
+starlette==1.8.0
+uvicorn[standard]==0.54.0
+SQLAlchemy==2.1.4
+psycopg[binary]==3.3.6
+alembic==1.20.0
+pydantic==2.14.1
+pydantic-settings==2.16.0
+argon2-cffi==25.1.0
+python-multipart==0.0.32
+pypdf==6.20.1
+# Safe XML parsing for Word (.docx) and Excel (.xlsx) uploads.
+defusedxml==0.7.1
+tzdata==2026.5
+httpx==0.28.1
+# Live AI assistant (Anthropic Messages API; only used when LIFELINE_AI_MODE=live).
+anthropic==1.15.0
+httpx2==2.13.1
+httpcore2==2.13.1
+jiter==0.17.0
+docstring_parser==0.18.0
+sniffio==1.3.1
+truststore==0.10.5
