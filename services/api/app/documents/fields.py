@@ -208,6 +208,16 @@ def _clean_value(field: str, raw: str) -> tuple[str | None, bool]:
 # --------------------------------------------------------------------------- rules
 
 
+def _more_label(val: str) -> bool:
+    """True for "/ proprietor" or "/ city / town": label words after a slash, not a value.
+
+    Split and check each part with a simple pattern (linear time): one nested regex here could backtrack badly.
+    """
+    if len(val) > 80 or not val.startswith("/"):
+        return False
+    return all(re.fullmatch(r"[A-Za-z][A-Za-z &]*", part.strip()) for part in val[1:].split("/"))
+
+
 def _after_label(text: str, labels: str) -> tuple[str, int] | None:
     """Value on the same line after a label, or on the next non-empty line, with its position."""
     # The label must end at a non-letter and its value starts on the same line: "TRADE LICENCE" followed by
@@ -216,7 +226,8 @@ def _after_label(text: str, labels: str) -> tuple[str, int] | None:
     if not m:
         return None
     val = m.group(1).strip()
-    if val:
+    # "Owner / proprietor" or "Country / city": the rest of the line is more label, so the value is on the next line.
+    if val and not _more_label(val):
         return val, m.start(1)
     pos = m.end()
     for line in text[m.end():].splitlines()[:3]:
@@ -256,9 +267,11 @@ def rules(purpose: str, text: str) -> dict[str, tuple[str, bool, int]]:
     t = text
     if purpose == "business":
         pairs = {
-            "name": r"(?:business|company|trade|firm)\s*name|name\s+of\s+(?:the\s+)?(?:business|company|firm|establishment)",
+            "name": r"(?:business|company|trade|firm|shop)(?:\s*/\s*(?:business|company|trade|firm|shop))?\s*name"
+                    r"|name\s+of\s+(?:the\s+)?(?:business|company|firm|establishment)",
             "business_type": r"nature\s+of\s+business|business\s+type|type\s+of\s+business|line\s+of\s+business|business\s+activity",
-            "registration_number": r"(?:trade\s+)?licen[cs]e\s*(?:no\.?|number)|registration\s*(?:no\.?|number)|reg\.?\s*no\.?|tin|bin",
+            "registration_number": r"(?:trade\s+)?licen[cs]e\s*(?:no\.?|number|ref(?:erence)?\.?|id)|registration\s*(?:no\.?|number|ref(?:erence)?\.?)"
+                                   r"|reg\.?\s*no\.?|tin|bin",
             "place": r"(?:business\s+)?address|location|premises",
             "country": r"country",
             "owner_name": r"(?:owner|proprietor)(?:'s)?\s*(?:name)?|name\s+of\s+(?:the\s+)?(?:owner|proprietor)",
@@ -277,6 +290,24 @@ def rules(purpose: str, text: str) -> dict[str, tuple[str, bool, int]]:
         hit = _after_label(t, labels)
         if hit:
             out[field] = hit
+    if purpose == "business":
+        # "Bangladesh / Dhaka" under "Country / city": the country is the first part.
+        if "country" in out and "/" in out["country"][0]:
+            out["country"] = (out["country"][0].split("/")[0].strip(), out["country"][1])
+        # An address that ends with a comma continues on the next line.
+        if "place" in out and out["place"][0].endswith(","):
+            val, pos = out["place"]
+            nxt = next((ln.strip() for ln in t[pos + len(val):].splitlines()[1:3] if ln.strip()), "")
+            if nxt:
+                out["place"] = (f"{val} {nxt}", pos)
+        # Both dates on one line: "Issue / expiry dates: 19 October 2026 / 18 October 2027" (or "… to …").
+        if "issue_date" not in out or "expiry_date" not in out:
+            both = _after_label(t, r"(?:issue|issued)\s*(?:/|and|&)\s*(?:expiry|expiration)\s+dates?|validity(?:\s+period)?|valid\s+from")
+            if both:
+                parts = [s.strip() for s in re.split(r"\s+(?:/|to|until|till|–|—|-)\s+|\s*/\s*(?=\d)", both[0]) if s.strip()]
+                if len(parts) >= 2:
+                    out.setdefault("issue_date", (parts[0], both[1]))
+                    out.setdefault("expiry_date", (parts[1], both[1] + both[0].find(parts[1])))
     if purpose == "customer":
         # The amount owed is the final total: "amount due" / "grand total" before a plain "total".
         m = None

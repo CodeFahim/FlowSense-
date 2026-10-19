@@ -241,3 +241,21 @@ def test_licence_heading_followed_by_issuer_is_not_a_licence_number():
     assert got["issue_date"] == "2026-07-01" and got["expiry_date"] == "2027-06-30"
     # A label ending in a dot still works.
     assert fields.rules("business", "Reg. No.: 77-123\n")["registration_number"][0] == "77-123"
+
+
+def test_licence_with_slash_labels_and_combined_dates():
+    """19 Oct (owner's workshop licence): "Business / shop name", "Owner / proprietor", "Licence reference",
+    "Country / city" and "Issue / expiry dates" on one line were missed or misread by the rules."""
+    from app.documents import fields
+
+    text = (
+        "Business Licence\nBusiness / shop name\nflowsense workshop\nOwner / proprietor\nFaysal Mahmud\n"
+        "Business type\nElectronics assembly\nBusiness address\nUnit TEST-12, Demo Road, Mirpur, Dhaka 1216,\n"
+        "Bangladesh (fictional address)\nCountry / city\nBangladesh / Dhaka\nLicence reference\nTEST-FS-LIC-2026-001\n"
+        "Registration reference\nTEST-FS-REG-001\nIssue / expiry dates\n19 October 2026 / 18 October 2027\n"
+    )
+    got = {k: v[0] for k, v in fields.rules("business", text).items()}
+    assert got["name"] == "flowsense workshop" and got["owner_name"] == "Faysal Mahmud"
+    assert got["registration_number"] == "TEST-FS-LIC-2026-001" and got["country"] == "BD"
+    assert got["issue_date"] == "2026-10-19" and got["expiry_date"] == "2027-10-18"
+    assert got["place"].endswith("Bangladesh (fictional address)")

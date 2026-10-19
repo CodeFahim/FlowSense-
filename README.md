@@ -1,53 +1,165 @@
-# FlowSense — AI cash-flow rescue copilot (sandbox)
+# FlowSense — the AI cash-flow copilot that knows when to say no
 
-FlowSense helps a small-business owner get through a cash crunch, for example *payroll is due Friday and the money
-isn't there*. It:
+[![CI](https://github.com/CodeFahim/FlowSense-/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeFahim/FlowSense-/actions/workflows/ci.yml)
 
-- finds the exact funding gap from **settled cash only** (promises and unpaid invoices don't count);
-- compares the ways out (collect an invoice, a loan, delay a supplier) against the owner's own rules and recommends
-  the cheapest safe one;
-- lets an **AI assistant** answer questions from the business's records, with every option labelled by code
-  (feasible, conditional, prohibited by your rules);
-- moves money **only after the owner approves one exact payment**, re-checked by a safety engine, paid exactly once,
-  with receipts and a tamper-evident audit trail;
-- reads documents (PDF, scans, photos, Word, Excel) to fill in forms for the owner to confirm.
+**2026 Shenzhen International FinTechathon · International Track · Topic E: SME Finance Copilot · Team Decimal Point (AIUB)**
 
-Built for the 2026 Shenzhen International FinTechathon (International Track, Topic E: SME Finance Copilot).
-Code name in the repository: *Lifeline*.
+> *Payroll is Friday. The money isn't there.*
+> FlowSense finds the exact cash gap, picks the cheapest fix that keeps the owner's rules, and moves money only after
+> the owner approves one exact payment — checked by a safety engine, paid exactly once, and proven with receipts and a
+> tamper-evident audit trail.
 
-## What's inside
+**Live sandbox:** **https://flowsense-rescue.vercel.app** · sign-in details are in our private submission notes.
+The free hosting sleeps when idle: the first visit can take up to a minute ("FlowSense is waking up…").
 
-| Folder | Contents |
+![FlowSense dashboard: one sentence states the gap](docs/images/dashboard.png)
+
+---
+
+## Why it matters
+
+Small businesses rarely fail on profit; they fail on the week the cash runs out. A customer owes money, payroll is
+due first, and under pressure the owner grabs the fastest money: an expensive loan, or the reserve that was meant to
+keep the business safe. Small businesses in developing economies face a **US$5.2 trillion** financing gap every year
+(IFC, *MSME Finance Gap*, 2017).
+
+Dashboards stop at "you are short". Chatbots suggest things nobody checks. Auto-payments move money on blanket
+permission. FlowSense is built to **think like an advisor and act like a careful accountant**.
+
+## The rescue, in one example
+
+| | Amount |
+|---|---:|
+| Payroll due Friday (14 staff) | 80,000 |
+| + Reserve the owner wants to keep | 10,000 |
+| − Settled cash in the bank | 50,000 |
+| **= Funding gap** | **40,000** |
+
+A customer owes 60,000 (overdue). FlowSense compares the options against the owner's policy:
+
+- **Recommended:** ask the customer to pay 40,000 of what they already owe — no cost.
+- **Rejected:** a short-term loan at **39.70% a year**, above the owner's **8%** limit — with the reason shown.
+- **No effect:** delaying a supplier whose bill falls after Friday.
+
+![Rescue plan: recommended option and the rejected loan](docs/images/rescue-plan.png)
+
+## What makes it stand out
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 1 · FlowSense says no
+Try to pay payroll before the money arrives and the safety engine **blocks it** — not enough settled cash, reserve
+breached — and offers only *Resolve cash shortage*. There is no "approve anyway", and the **server refuses it too**,
+even through the API.
+
+</td>
+<td width="50%" valign="top">
+
+![Payroll payment blocked by the safety engine](docs/images/says-no.png)
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 2 · AI that keeps your rules
+A real answer from the live assistant (Google Gemini). The owner types in plain words — *keep my reserve, no
+borrowing, what if a 15,000 bill came due tomorrow?* — and types **no numbers**: the AI already knows the records.
+Asked for three options, it says honestly that **only one is safe**.
+
+Under every answer, **FlowSense's own code** labels each option — *Feasible*, *Conditional*, *Prohibited by your
+rules* — so the AI can explain the result but **cannot change it**.
+
+</td>
+<td valign="top">
+
+![Live AI answer with option cards checked by FlowSense](docs/images/ai-assistant.png)
+
+</td>
+</tr>
+</table>
+
+### 3 · Proof, not promises
+- A **double-click on "pay" paid exactly once** (idempotent execution, verified on the live site).
+- **10/10 scripted scenarios** pass over HTTP ([`scripts/run_scenarios.py`](scripts/run_scenarios.py)): the full
+  rescue, partial payment, prompt injection in a document, bank details changed after approval, reserve breach,
+  duplicate payroll (concurrent and double-click), bank timeout with an API restart, staff / cross-tenant / missing
+  CSRF, a customer refusing, and the full rescue in USD.
+- **223 backend tests** on real PostgreSQL and **38 browser journeys** (Playwright) run on **every push** in CI.
+
+## How FlowSense meets the judging criteria
+
+| Criterion | What to look at |
 |---|---|
-| `services/api` | Backend: Python 3.12, FastAPI, SQLAlchemy, Alembic migrations (`alembic/versions`), tests (`tests/`) |
-| `apps/web` | Frontend: Next.js 16, React 19, Tailwind CSS; browser tests (`e2e/`, Playwright) |
-| `infra/db-init` | Creates the test database on first start |
-| `scripts` | PowerShell helpers to set up, start, stop, test and verify |
-| `samples` | Synthetic documents used by the browser tests |
-| `compose.yaml` | Runs PostgreSQL 16 + API + web in Docker |
-| `render.yaml`, `apps/web/vercel.json` | Optional hosted deployment (Render + Vercel) |
+| **Task completion (40%)** — Topic E: financing-option matching, cash-flow management with alerts, business financial analysis | Dated funding gap from settled cash; rescue planner comparing collection, financing (cost vs. policy cap) and supplier extension; 7–60 day forecast and what-if; approvals, simulated settlement, receipts; AI analysis of the business; 12-month sales forecast; document reader that fills forms |
+| **Security & compliance (30%)** | Independent safety kernel at propose / approve / execute; approvals bound to amount, recipient version and policy version (single use, 30 min); exactly-once execution; cash changes only on HMAC-signed settlement; append-only ledger, receipts and hash-chained audit enforced by database triggers; tenant isolation (404 for other tenants), CSRF, Argon2id, rate limits |
+| **Innovation & interaction (30%)** | An AI copilot that is *allowed to say no*: option classes decided by code, a rule guard on every live answer, confirm-to-act suggestions; documents treated as data, never instructions; 155 currencies; plain-language, mobile-friendly UI |
 
-## Prerequisites
+## How it works
 
-- **Docker Desktop** (Windows/macOS) or Docker Engine with Compose v2 (Linux), running. This is all you need to run
-  the app; PostgreSQL runs inside Docker.
-- About 2 GB of free memory and ports **3000, 8000 and 5432** free on `127.0.0.1`.
-- Optional, for the browser tests only: **Node.js 24**.
-- Optional: an AI key (Anthropic or Google Gemini) for the live assistant, and an email service (Resend, Brevo or
-  SMTP) for sign-up codes. Without them the app still runs (see Limitations).
+```mermaid
+flowchart LR
+    O([Owner]) --> UI[Next.js web app]
+    UI -->|same-origin /api| API[FastAPI]
+    API --> AI[AI assistant<br/>read-only tools,<br/>suggestions only]
+    API --> P[Rescue planner<br/>and forecast]
+    API --> K{{Safety kernel}}
+    AI -. suggestion .-> O
+    O -->|approves one exact payment| K
+    K -->|allow| X[Pending transfer<br/>exactly once]
+    K -->|deny + reasons| O
+    X --> B[(Sandbox bank)]
+    B -->|HMAC-signed settlement| R[Reconciliation]
+    R --> L[(Double-entry ledger,<br/>receipts, audit chain)]
+```
 
-## Install and run
+- **The AI can never move money.** It reads records, explains, and can only *suggest* a record or a payment request,
+  which the user confirms; payments still need owner approval in Approvals.
+- **Settled cash only.** Promises, accepted requests and invoices never reduce the gap until money settles.
+- **Every money action** goes through `domain/actions.py` → `safety/kernel.py` at propose, approve and execute.
+- **Money is integer minor units** in the business's accounting currency (ISO 4217 decimals, 155 currencies).
 
-### Windows (PowerShell, from the project folder)
+## Features
+
+- **Dashboard** — one-sentence situation, settled cash, essential payments, money owed, the shortage.
+- **Rescue plan** — options compared against the owner's rules, with evidence and reasons; replans on partial
+  payment or a customer's refusal.
+- **AI assistant** — on every screen; live Gemini with deterministic "quick answers" as a labelled fallback.
+- **Approvals** — exact-amount confirmation, single-use approvals, simulated sending and settlement.
+- **Activity & receipts** — full timeline, receipts for every settled payment, one-click integrity check.
+- **Money in / out, customers, forecasts** — invoices with evidence, bills and payroll, cash history, sales forecast.
+- **Document reader** — PDF, scans and photos (OCR), Word and Excel; values are suggestions the user confirms.
+- **Accounts** — sign-up with email codes, private workspaces, owner and staff roles, resettable sample scenarios.
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Recharts |
+| Backend | Python 3.12, FastAPI, SQLAlchemy 2, Alembic, Pydantic 2 |
+| Database | PostgreSQL 16 (immutability and balance enforced by triggers) |
+| AI | Google Gemini (live) or Anthropic; offline demo assistant for local runs |
+| Documents | Tesseract OCR, Poppler, pypdf — parsed in memory- and time-limited processes |
+| Testing & CI | pytest, Playwright, ruff, mypy, eslint, tsc, pip-audit, npm audit — GitHub Actions |
+| Hosting | Vercel (web) + Render (API and database) |
+
+## Run it locally
+
+**Prerequisites:** Docker Desktop (or Docker Engine with Compose v2), about 2 GB of free memory, and ports 3000,
+8000 and 5432 free. PostgreSQL runs inside Docker; nothing else is required.
+
+**Windows (PowerShell, in the project folder):**
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass   # allow the project's scripts in this window
 .\scripts\setup.ps1                         # creates .env with random local secrets (never overwrites one)
-.\scripts\start.ps1                         # builds and starts database, API and web; first run takes a few minutes
+.\scripts\start.ps1                         # builds and starts database, API and web (first run: a few minutes)
 .\scripts\demo-credentials.ps1              # prints the demo sign-in details
 ```
 
-### macOS / Linux
+**macOS / Linux:**
 
 ```bash
 cp .env.example .env
@@ -56,68 +168,79 @@ cp .env.example .env
 docker compose up -d --build --wait
 ```
 
-**Database setup is automatic:** when the API starts it runs the migrations (`alembic upgrade head`) and seeds the
-synthetic demo data if it is missing. Data is kept in the Docker volume `lifeline_pgdata`.
+The API runs the database migrations and seeds the synthetic demo data automatically. Then open
+**http://localhost:3000** (API health: http://localhost:8000/api/health).
 
-Stop: `.\scripts\stop.ps1` or `docker compose down`. Check health: `.\scripts\health.ps1`.
+### Five-minute tour
 
-## Open it
+1. Sign in as **demo@lifeline.example** with `LIFELINE_DEMO_PASSWORD` from `.env`
+   (`fresh@lifeline.example` starts an empty workspace).
+2. **Dashboard:** 50,000 in the bank, payroll 80,000 due Friday, reserve 10,000 → **40,000 short**.
+3. **Ask AI:** "What are my options to cover payroll?"
+4. **Rescue plan:** the recommended collection and the rejected 39.70% loan.
+5. **Approvals:** try payroll first — blocked. Approve and send the 40,000 request, then use the sandbox buttons
+   **Customer accepts** (cash unchanged) and **Customer pays**. Now approve and submit payroll.
+6. **Activity & Receipts:** two receipts and **Check record integrity**.
+7. Start again any time: **Demo scenarios → Standard rescue → Reset** (resets archive data; nothing is deleted).
 
-- App: **http://localhost:3000**
-- API health: http://localhost:8000/api/health · API docs (development only): http://localhost:8000/api/docs
+### Configuration
 
-## First use (about 5 minutes)
+All settings are documented in [`.env.example`](.env.example). Locally, the assistant runs **offline**
+(`LIFELINE_AI_MODE=demo`); set `LIFELINE_AI_MODE=live` with your own Anthropic or Gemini key for the live AI.
+Sign-up emails need an email provider (`LIFELINE_EMAIL_PROVIDER`). Never commit `.env`.
 
-1. Sign in as **demo@lifeline.example** with the `LIFELINE_DEMO_PASSWORD` value from `.env`.
-   Other synthetic accounts: `demo-staff@lifeline.example` (staff role), `owner@harbortea.example` (another
-   business), and `fresh@lifeline.example` (empty workspace, password `LIFELINE_FRESH_ACCOUNT_PASSWORD`).
-2. **Dashboard:** one sentence states the gap — payroll 80,000 due Friday, 50,000 in the bank, a 10,000 reserve to
-   protect, a customer owing 60,000 → **40,000 short**.
-3. **Ask AI** (top right): e.g. "What are my options to cover payroll?"
-4. **Rescue plan:** the recommended fix (collect 40,000 of the overdue invoice) and the rejected loan (39.70% a year
-   against an 8% limit).
-5. **Approvals:** try to approve payroll first — it is blocked. Approve and send the 40,000 payment request, then use
-   the sandbox buttons **Customer accepts** (no cash yet) and **Customer pays**. Now approve and submit payroll.
-6. **Activity & Receipts:** receipts for both payments and **Check record integrity**.
-7. To start again: **Demo scenarios** → *Standard rescue* → **Reset to this scenario** (type `RESET`). Resets
-   archive the old data; nothing is deleted.
+## Tests
 
-## Configuration (`.env`)
-
-All settings are documented in `.env.example`. The important ones:
-
-| Setting | Default | Meaning |
-|---|---|---|
-| `LIFELINE_AI_MODE` | `demo` | `demo` = offline assistant (no key, no network); `live` = real AI |
-| `LIFELINE_AI_PROVIDER` + key + model | Anthropic | For live mode: `LIFELINE_ANTHROPIC_API_KEY` / `_MODEL`, or `LIFELINE_AI_PROVIDER=gemini` with `LIFELINE_GEMINI_API_KEY` / `_MODEL` |
-| `LIFELINE_EMAIL_PROVIDER` | `off` | `resend`, `brevo` or `smtp` to send sign-up and password codes |
-| `LIFELINE_FX_PROVIDER` | `erapi` | Exchange rates for display and the converter (needs internet); `off` disables them |
-| `LIFELINE_DEMO_CONTROLS_ENABLED` | `true` | Demo reset and the sandbox customer simulator; refused in production |
-
-Never commit `.env`. After changing it: `docker compose up -d --build --wait`.
-
-## Tests and checks
-
-With the stack running (Windows PowerShell):
+With the stack running (Windows):
 
 ```powershell
-.\scripts\test.ps1       # backend tests (pytest) inside the API container, against a separate test database
+.\scripts\test.ps1       # backend tests (pytest) inside the API container, separate test database
 .\scripts\evidence.ps1   # 10 scripted safety scenarios over HTTP; writes evidence/
-.\scripts\e2e.ps1        # browser tests (Playwright); first run: cd apps\web; npm ci; npx playwright install chromium
+.\scripts\e2e.ps1        # browser tests; first run: cd apps\web; npm ci; npx playwright install chromium
 .\scripts\verify.ps1     # everything: ruff, mypy, pytest, pip-audit, eslint, tsc, build, npm audit, e2e, evidence
 ```
 
-On macOS/Linux the backend tests run with `docker compose exec -T api python -m pytest -q`.
+macOS/Linux backend tests: `docker compose exec -T api python -m pytest -q`. The same checks run in
+[GitHub Actions](.github/workflows/ci.yml) on every push, with throwaway secrets — no repository secrets needed.
 
-## Limitations (please read)
+## Repository layout
 
-- **Sandbox only.** There is no real bank, money or customer. Payments, bank settlement and customer replies are
-  **simulated** (signed sandbox events; the "Customer accepts / pays / refuses" buttons). All demo data is synthetic.
-- **AI:** by default the assistant is an **offline demo assistant** with prepared answers. Live AI needs your own API
-  key. The AI can only read, explain and suggest; it can never approve or move money.
-- **Email:** off by default, so new sign-ups can't receive their 6-digit code; use the seeded accounts or configure an
-  email service.
+| Path | Contents |
+|---|---|
+| `services/api/app` | API: `safety/` kernel, `domain/` actions and position, `planning/` planner and forecast, `reconciliation/`, `ledger/`, `audit/`, `agents/` (AI), `documents/`, `fx/` |
+| `services/api/alembic` | Database migrations |
+| `services/api/tests` | Backend tests |
+| `apps/web/src` | Web app (Next.js App Router) |
+| `apps/web/e2e` | Browser tests (Playwright) |
+| `scripts` | Setup, start, stop, test and verification helpers |
+| `samples` | Synthetic documents used by the tests |
+| `compose.yaml`, `render.yaml` | Local Docker stack; hosted deployment (Render + Vercel) |
+
+## Honest limitations
+
+- **Sandbox only.** No real bank, money or customer: payments, settlement and customer replies are **simulated**
+  through HMAC-signed sandbox events. All data is synthetic.
+- **AI** is live on the hosted site; locally it is an **offline demo assistant** unless you add your own key. The AI
+  can read, explain and suggest — never approve or move money.
 - **Exchange rates** are daily reference rates for display and conversion only; they never change stored records.
-- **Document reading:** OCR (Tesseract) runs inside the API container; long scans are read up to their first 10
-  pages. Extracted values are suggestions the user must confirm.
-- Planning is designed for small-business volumes and one accounting currency per business.
+- **Document reading** returns suggestions to confirm; long scans are read up to their first 10 pages.
+- The free hosting tier sleeps when idle; the planner is designed for small-business volumes and one accounting
+  currency per business.
+
+## Roadmap
+
+**Now:** working sandbox → **Next:** a payment provider's test API replaces the simulator → **Then:** a pilot with
+one partner bank and a small group of SMEs → **Later:** live bank feeds for alerts before the crunch.
+
+## Team Decimal Point
+
+American International University-Bangladesh (AIUB)
+
+| Name | Contact |
+|---|---|
+| Tahsin Ahmed Fahim | 23-52735-2@student.aiub.edu |
+| Sheikh Akid Bari Rafee | 23-54440-3@student.aiub.edu |
+| Faysal Mahmud | 23-54032-3@student.aiub.edu |
+| Nahian Islam Rishad | 23-54466-3@student.aiub.edu |
+
+*Code name in the source: Lifeline. Sample business, people and documents are fictional.*
