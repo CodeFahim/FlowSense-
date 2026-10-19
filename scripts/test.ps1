@@ -1,4 +1,4 @@
-# Runs the backend test suite inside the API container against the separate lifeline_test database.
+# Runs the backend test suite inside the API container against the separate flowsense_test database.
 # Native tools (docker, npm) write progress to stderr; rely on exit codes instead of Stop.
 $ErrorActionPreference = "Continue"
 Push-Location (Split-Path -Parent $PSScriptRoot)

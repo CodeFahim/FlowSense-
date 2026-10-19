@@ -12,9 +12,9 @@ ledger and audit chain stay intact and verifiable) and seeds a fresh one.
 The isolation tenant ("Harbor Tea House") is created once and never reset.
 
 Identities:
-  demo@lifeline.example        designated demo submission account (owner of the demo workspace)
-  fresh@lifeline.example       designated clean submission account ("Start fresh"; empty workspace)
-  demo-staff@lifeline.example  automated-test identity: staff member of the demo workspace
+  demo@flowsense.example        designated demo submission account (owner of the demo workspace)
+  fresh@flowsense.example       designated clean submission account ("Start fresh"; empty workspace)
+  demo-staff@flowsense.example  automated-test identity: staff member of the demo workspace
   owner@harbortea.example      automated-test identity: owner of a separate tenant (isolation checks)
 A user who signs up and picks "Try the demo" gets a private sample workspace (fixture key
 "sample:<user id>") seeded the same way; it never touches their own workspace.
@@ -55,7 +55,7 @@ from app.planning import rescue
 from app.policies.compiler import compile_policy
 from app.sandbox import simulator
 
-FIXTURE_KEY = "lifeline-demo"
+FIXTURE_KEY = "flowsense-demo"
 LEGACY_FIXTURE_KEY = "pearl-river-demo"  # pre-release demo fixture; archived (never deleted) on upgrade
 ISOLATION_KEY = "harbor-tea-isolation"
 TZ = "UTC"  # standard scenarios
@@ -85,11 +85,11 @@ INJECTION_TEXT = (
 )
 
 USERS = {
-    "owner": ("demo@lifeline.example", "Alex Morgan (demo owner, synthetic)"),
-    "staff": ("demo-staff@lifeline.example", "Sam Rivera (staff, synthetic)"),
+    "owner": ("demo@flowsense.example", "Alex Morgan (demo owner, synthetic)"),
+    "staff": ("demo-staff@flowsense.example", "Sam Rivera (staff, synthetic)"),
     "other_owner": ("owner@harbortea.example", "Harbor Tea owner (synthetic)"),
 }
-FRESH_USER = ("fresh@lifeline.example", "Start-fresh reviewer (synthetic)")
+FRESH_USER = ("fresh@flowsense.example", "Start-fresh reviewer (synthetic)")
 LEGACY_EMAILS = ("owner@pearlriver.example", "staff@pearlriver.example")
 
 SCENARIOS: dict[str, dict[str, Any]] = {
@@ -176,7 +176,7 @@ def _demo_password() -> str:
     if not s.demo_controls_enabled or s.env == "production":
         raise ApiError(403, "DEMO_DISABLED", "Demo seeding is disabled in this environment.")
     if s.demo_password is None or len(s.demo_password.get_secret_value()) < 12:
-        raise ApiError(500, "DEMO_PASSWORD_MISSING", "Set LIFELINE_DEMO_PASSWORD (12+ chars) in .env; scripts/setup.ps1 generates one.")
+        raise ApiError(500, "DEMO_PASSWORD_MISSING", "Set FLOWSENSE_DEMO_PASSWORD (12+ chars) in .env; scripts/setup.ps1 generates one.")
     return s.demo_password.get_secret_value()
 
 

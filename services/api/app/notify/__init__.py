@@ -2,15 +2,15 @@
 
 Providers, server-side only:
 - "smtp": any SMTP server over TLS, e.g. Gmail (smtp.gmail.com:465) with an app password from
-  LIFELINE_SMTP_USERNAME / LIFELINE_SMTP_PASSWORD. The password never leaves the server and is never logged.
-- "brevo": Brevo HTTPS API with LIFELINE_BREVO_API_KEY (for hosts that block outgoing SMTP ports, such as
+  FLOWSENSE_SMTP_USERNAME / FLOWSENSE_SMTP_PASSWORD. The password never leaves the server and is never logged.
+- "brevo": Brevo HTTPS API with FLOWSENSE_BREVO_API_KEY (for hosts that block outgoing SMTP ports, such as
   Render's free plan); the sender address must be verified in Brevo.
-- "resend": Resend HTTP API with LIFELINE_RESEND_API_KEY.
+- "resend": Resend HTTP API with FLOWSENSE_RESEND_API_KEY.
 When email is not configured nothing is sent and callers report "not configured"; delivery is never
 simulated as successful. Messages come from "FlowSense - No Reply"; the footer says the inbox isn't
 monitored.
 
-Links in emails are built only from LIFELINE_PUBLIC_APP_URL (a trusted origin),
+Links in emails are built only from FLOWSENSE_PUBLIC_APP_URL (a trusted origin),
 never from request headers. Tokens are never logged or stored in the delivery log.
 """
 
@@ -32,7 +32,7 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.models import EmailDelivery
 
-log = logging.getLogger("lifeline.email")
+log = logging.getLogger("flowsense.email")
 RESEND_URL = "https://api.resend.com/emails"
 BREVO_URL = "https://api.brevo.com/v3/smtp/email"
 

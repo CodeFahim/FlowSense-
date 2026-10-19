@@ -22,7 +22,7 @@ from app.audit import chain as audit
 from app.config import get_settings
 from app.errors import ApiError
 
-log = logging.getLogger("lifeline.ai")
+log = logging.getLogger("flowsense.ai")
 
 EMPTY_ANSWER = "I couldn't produce an answer this time. Try rephrasing the question."
 
@@ -106,11 +106,11 @@ def _map_error(exc: Exception) -> AIUnavailable:
     import anthropic
 
     if isinstance(exc, anthropic.AuthenticationError):
-        return AIUnavailable("invalid_credentials", "The AI service rejected this server's API key. The operator needs to check LIFELINE_ANTHROPIC_API_KEY.")
+        return AIUnavailable("invalid_credentials", "The AI service rejected this server's API key. The operator needs to check FLOWSENSE_ANTHROPIC_API_KEY.")
     if isinstance(exc, anthropic.PermissionDeniedError):
         return AIUnavailable("permission", "The AI key is not allowed to use this model. The operator needs to check the model setting.")
     if isinstance(exc, anthropic.NotFoundError):
-        return AIUnavailable("model_not_found", "The configured AI model was not found. The operator needs to check LIFELINE_ANTHROPIC_MODEL.")
+        return AIUnavailable("model_not_found", "The configured AI model was not found. The operator needs to check FLOWSENSE_ANTHROPIC_MODEL.")
     if isinstance(exc, anthropic.RateLimitError):
         return AIUnavailable("rate_limited", "The AI service is busy or the usage limit was reached. Try again in a minute.")
     if isinstance(exc, anthropic.BadRequestError):
@@ -149,8 +149,8 @@ def run(ctx: T.ToolContext, message: str, history: list[dict[str, str]], page: s
     snapshot, snap_err = T.run_tool(ctx, "get_business_snapshot", {})
     audit.append(ctx.db, ctx.biz.id, event_type="assistant.tool_call", actor_type="assistant", actor_id=ctx.user.id, outcome="error" if snap_err else "ok", payload={"tool": "get_business_snapshot", "round": "auto"})
     ctx.db.commit()
-    messages.append({"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_lifeline_snapshot", "name": "get_business_snapshot", "input": {}}]})
-    messages.append({"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_lifeline_snapshot", "content": json.dumps(snapshot, default=str), "is_error": snap_err}]})
+    messages.append({"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_flowsense_snapshot", "name": "get_business_snapshot", "input": {}}]})
+    messages.append({"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_flowsense_snapshot", "content": json.dumps(snapshot, default=str), "is_error": snap_err}]})
     defs = T.definitions()
     started = time.monotonic()
     calls: list[dict[str, Any]] = [{"tool": "get_business_snapshot", "error": snap_err, "automatic": True}]

@@ -11,7 +11,7 @@ export const ACCENTS: { id: Accent; label: string; swatch: string }[] = [
   { id: "amber", label: "Amber", swatch: "#a75208" },
 ];
 
-const KEY = "lifeline.appearance";
+const KEY = "flowsense.appearance";
 let mql: MediaQueryList | null = null;
 let current: { theme: Theme; accent: Accent } = { theme: "system", accent: "teal" };
 

@@ -156,30 +156,30 @@ dialog::backdrop {
   interpolate-size: allow-keywords;
 }
 
-@keyframes lifeline-in {
+@keyframes flowsense-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: none; }
 }
-@keyframes lifeline-page {
+@keyframes flowsense-page {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
-@keyframes lifeline-pop {
+@keyframes flowsense-pop {
   from { opacity: 0; transform: scale(0.6); }
   to { opacity: 1; transform: none; }
 }
-@keyframes lifeline-bar {
+@keyframes flowsense-bar {
   from { transform: scaleX(0); }
   to { transform: none; }
 }
-@keyframes lifeline-bar-y {
+@keyframes flowsense-bar-y {
   from { transform: scaleY(0); }
   to { transform: none; }
 }
-.animate-in { animation: lifeline-in var(--dur) var(--ease-out); }
-.animate-page { animation: lifeline-page var(--dur-slow) var(--ease-out); }
-.animate-pop { animation: lifeline-pop var(--dur) var(--ease-out); }
-.animate-bar { animation: lifeline-bar 400ms var(--ease-out); transform-origin: left center; }
+.animate-in { animation: flowsense-in var(--dur) var(--ease-out); }
+.animate-page { animation: flowsense-page var(--dur-slow) var(--ease-out); }
+.animate-pop { animation: flowsense-pop var(--dur) var(--ease-out); }
+.animate-bar { animation: flowsense-bar 400ms var(--ease-out); transform-origin: left center; }
 
 /* Controls: colour changes ease instead of snapping; a press gives a slight squeeze. Utilities such as
    transition-transform (chevrons) still win because they sit in a later layer. */
@@ -217,7 +217,7 @@ dialog::backdrop {
 /* Fills of progress bars grow in on first paint and slide to new values after an update. */
 .bar-fill {
   transition: width var(--dur-slow) var(--ease-out);
-  animation: lifeline-bar 400ms var(--ease-out);
+  animation: flowsense-bar 400ms var(--ease-out);
   transform-origin: left center;
 }
 

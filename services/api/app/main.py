@@ -22,7 +22,7 @@ from app.documents import intake as doc_intake
 from app.documents import pdf as pdf_intake
 from app.errors import ApiError
 
-log = logging.getLogger("lifeline")
+log = logging.getLogger("flowsense")
 _PDF_UPLOAD_PATH = re.compile(r"/api/invoices/[^/]+/evidence/pdf")
 
 

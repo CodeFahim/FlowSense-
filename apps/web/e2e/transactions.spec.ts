@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { item, login, password, resetTo } from "./helpers";
 
 test("kill switch refusal, then a fresh retry pays exactly once", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   await login(page);
   await resetTo(page, "Duplicate payroll submissions");
 
@@ -28,7 +28,7 @@ test("kill switch refusal, then a fresh retry pays exactly once", async ({ page 
 });
 
 test("bank timeout shows pending until a status check confirms it", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   await login(page);
   await resetTo(page, "Bank timeout and restart recovery");
 

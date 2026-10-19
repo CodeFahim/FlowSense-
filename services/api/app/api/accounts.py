@@ -56,7 +56,7 @@ _EMAIL_LOCAL = re.compile(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?
 _EMAIL_LABEL = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
 _TLD = re.compile(r"^(?:[a-z]{2,63}|xn--[a-z0-9-]{1,59})$")
 _USERNAME = re.compile(r"^[a-z0-9][a-z0-9._-]{1,28}[a-z0-9]$")
-_RESERVED_USERNAMES = {"admin", "administrator", "root", "support", "help", "lifeline", "system", "owner", "staff", "demo", "fresh", "security", "api", "null", "undefined"}
+_RESERVED_USERNAMES = {"admin", "administrator", "root", "support", "help", "flowsense", "system", "owner", "staff", "demo", "fresh", "security", "api", "null", "undefined"}
 
 
 def email_problem(email: str) -> str | None:

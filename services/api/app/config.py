@@ -20,7 +20,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="LIFELINE_", extra="ignore")
+    model_config = SettingsConfigDict(env_prefix="FLOWSENSE_", extra="ignore")
 
     env: Literal["development", "test", "hosted_demo", "production"] = "development"
     database_url: str
@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     smtp_port: int = 465  # 465 = TLS from the start; 587 = STARTTLS
     smtp_username: str | None = None
     smtp_password: SecretStr | None = None  # a Gmail *app password*, set only in the server's environment
-    public_app_url: str | None = None  # trusted origin used in emailed links, e.g. https://lifeline-rescue-psi.vercel.app
+    public_app_url: str | None = None  # trusted origin used in emailed links, e.g. https://flowsense-rescue.vercel.app
     email_timeout_seconds: float = 8.0
     # AI assistant. demo = offline deterministic assistant (labelled); live = a real model with server-side
     # tools; off = assistant unavailable. In live mode, when the AI service is out of quota or down, the
@@ -96,7 +96,7 @@ class Settings(BaseSettings):
     max_body_bytes: int = 1_000_000
     # Exchange rates for display and the converter only (never used to move money).
     # "erapi": ExchangeRate-API open access (free, no key, ~160 currencies incl. BDT, daily; attribution required).
-    # "exchangerate_api": ExchangeRate-API v6 with LIFELINE_FX_API_KEY (keyed plan; more frequent updates).
+    # "exchangerate_api": ExchangeRate-API v6 with FLOWSENSE_FX_API_KEY (keyed plan; more frequent updates).
     # "ecb": European Central Bank euro reference rates (free, no key, ~30 currencies, daily).
     # "off": no automatic rates; the converter still offers manual and labelled demo rates.
     fx_provider: Literal["erapi", "exchangerate_api", "ecb", "off"] = "erapi"
@@ -115,7 +115,7 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def _production_guards(self) -> Settings:
         if len(self.sandbox_event_secret.get_secret_value()) < 32:
-            raise ValueError("LIFELINE_SANDBOX_EVENT_SECRET must be at least 32 characters")
+            raise ValueError("FLOWSENSE_SANDBOX_EVENT_SECRET must be at least 32 characters")
         if self.env == "production":
             if self.demo_controls_enabled:
                 raise ValueError("Demo controls must be disabled in production")
@@ -125,22 +125,22 @@ class Settings(BaseSettings):
                 raise ValueError("Demo credentials must not be configured in production")
         if self.env == "hosted_demo":
             if not self.cookie_secure:
-                raise ValueError("A hosted demo is served over HTTPS: LIFELINE_COOKIE_SECURE must be true")
+                raise ValueError("A hosted demo is served over HTTPS: FLOWSENSE_COOKIE_SECURE must be true")
             if self.demo_password is None or len(self.demo_password.get_secret_value()) < 24:
-                raise ValueError("A hosted demo needs a generated LIFELINE_DEMO_PASSWORD of at least 24 characters")
+                raise ValueError("A hosted demo needs a generated FLOWSENSE_DEMO_PASSWORD of at least 24 characters")
             if self.trusted_proxy_hops is not None and self.trusted_proxy_hops < 1:
-                raise ValueError("A hosted demo runs behind a proxy: set LIFELINE_TRUSTED_PROXY_HOPS=1 (Render)")
+                raise ValueError("A hosted demo runs behind a proxy: set FLOWSENSE_TRUSTED_PROXY_HOPS=1 (Render)")
             if self.fresh_account_password is not None and len(self.fresh_account_password.get_secret_value()) < 24:
-                raise ValueError("A hosted demo needs LIFELINE_FRESH_ACCOUNT_PASSWORD of at least 24 characters (or leave it unset)")
+                raise ValueError("A hosted demo needs FLOWSENSE_FRESH_ACCOUNT_PASSWORD of at least 24 characters (or leave it unset)")
         if self.env in ("hosted_demo", "production") and self.public_app_url and not self.public_app_url.startswith("https://"):
-            raise ValueError("LIFELINE_PUBLIC_APP_URL must be an https:// origin outside local development")
+            raise ValueError("FLOWSENSE_PUBLIC_APP_URL must be an https:// origin outside local development")
         if self.public_app_url and not _ORIGIN.fullmatch(self.public_app_url):
-            raise ValueError("LIFELINE_PUBLIC_APP_URL must be an origin such as https://example.com (no path)")
+            raise ValueError("FLOWSENSE_PUBLIC_APP_URL must be an origin such as https://example.com (no path)")
         if self.ai_mode == "live" and not (self.ai_key and self.ai_model):
             p = self.ai_provider.upper()
-            raise ValueError(f"AI_MODE=live with AI_PROVIDER={self.ai_provider} requires LIFELINE_{p}_API_KEY and LIFELINE_{p}_MODEL")
+            raise ValueError(f"AI_MODE=live with AI_PROVIDER={self.ai_provider} requires FLOWSENSE_{p}_API_KEY and FLOWSENSE_{p}_MODEL")
         if self.fx_provider == "exchangerate_api" and not (self.fx_api_key and self.fx_api_key.get_secret_value().strip()):
-            raise ValueError("FX_PROVIDER=exchangerate_api requires LIFELINE_FX_API_KEY")
+            raise ValueError("FX_PROVIDER=exchangerate_api requires FLOWSENSE_FX_API_KEY")
         return self
 
     @property

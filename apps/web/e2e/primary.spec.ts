@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { approve, item, login, password, resetTo, tab } from "./helpers";
 
 test("primary rescue journey through the real UI", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   await login(page);
   await resetTo(page, "Standard rescue");
 

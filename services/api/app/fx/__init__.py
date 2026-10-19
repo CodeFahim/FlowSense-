@@ -2,12 +2,12 @@
 changes balances, approvals, reserves, the ledger or receipts. Rates are never
 applied to stored financial records.
 
-Providers (server-side; selected by LIFELINE_FX_PROVIDER):
+Providers (server-side; selected by FLOWSENSE_FX_PROVIDER):
   erapi            ExchangeRate-API open access, https://open.er-api.com/v6/latest/USD
                    Free, no key, ~160 currencies incl. BDT, updated once a day.
                    Terms: attribution link "Rates By Exchange Rate API" required, caching allowed,
                    redistribution of the data prohibited. Rate-limited per IP (HTTP 429).
-  exchangerate_api ExchangeRate-API v6 with LIFELINE_FX_API_KEY (paid/free keyed plans; the plan
+  exchangerate_api ExchangeRate-API v6 with FLOWSENSE_FX_API_KEY (paid/free keyed plans; the plan
                    decides the update frequency). Same data family and attribution.
   ecb              European Central Bank euro reference rates (~30 currencies, working days).
                    Used as the fallback provider only when the primary has never produced a snapshot.
@@ -70,7 +70,7 @@ PROVIDERS: dict[str, dict[str, Any]] = {
         "label": "ExchangeRate-API (keyed plan)",
         "frequency": "Depends on the plan (daily on the free key; hourly or faster on paid plans)",
         "key_required": True,
-        "plan": "Needs LIFELINE_FX_API_KEY from exchangerate-api.com. Paid plans are optional and not purchased.",
+        "plan": "Needs FLOWSENSE_FX_API_KEY from exchangerate-api.com. Paid plans are optional and not purchased.",
         "stale_after_hours": 48,
         "attribution": ATTRIBUTION,
         "docs": "https://www.exchangerate-api.com/docs/standard-requests",

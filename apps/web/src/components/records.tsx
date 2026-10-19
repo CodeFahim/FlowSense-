@@ -24,7 +24,7 @@ export const ADD_OPTIONS: { kind: AddKind; label: string; hint: string; Icon: ty
   { kind: "document", label: "Supporting document", hint: "PDF or note for an invoice", Icon: Upload },
 ];
 
-export const RECORDS_CHANGED = "lifeline:records-changed";
+export const RECORDS_CHANGED = "flowsense:records-changed";
 export function recordsChanged() {
   window.dispatchEvent(new Event(RECORDS_CHANGED));
 }

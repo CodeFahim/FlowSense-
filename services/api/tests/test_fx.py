@@ -194,8 +194,8 @@ def test_client_ip_uses_secret_header_or_rightmost_hop(monkeypatch):
     # A caller cannot forge the right-most entry (appended by our proxy).
     assert client_ip(req({"x-forwarded-for": "1.2.3.4, 203.0.113.9"})) == "203.0.113.9"
     # The frontend's header is trusted only with the shared secret.
-    assert client_ip(req({"x-forwarded-for": "5.5.5.5", "x-lifeline-client-ip": "9.9.9.9", "x-lifeline-proxy-secret": "wrong"})) == "5.5.5.5"
-    assert client_ip(req({"x-forwarded-for": "5.5.5.5", "x-lifeline-client-ip": "9.9.9.9", "x-lifeline-proxy-secret": "p" * 32})) == "9.9.9.9"
-    assert client_ip(req({"x-lifeline-client-ip": "<script>", "x-lifeline-proxy-secret": "p" * 32})) == "10.0.0.9"
+    assert client_ip(req({"x-forwarded-for": "5.5.5.5", "x-flowsense-client-ip": "9.9.9.9", "x-flowsense-proxy-secret": "wrong"})) == "5.5.5.5"
+    assert client_ip(req({"x-forwarded-for": "5.5.5.5", "x-flowsense-client-ip": "9.9.9.9", "x-flowsense-proxy-secret": "p" * 32})) == "9.9.9.9"
+    assert client_ip(req({"x-flowsense-client-ip": "<script>", "x-flowsense-proxy-secret": "p" * 32})) == "10.0.0.9"
     monkeypatch.setattr(s, "trusted_proxy_hops", 0)
     assert client_ip(req({"x-forwarded-for": "1.2.3.4"})) == "10.0.0.9"

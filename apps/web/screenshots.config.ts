@@ -7,6 +7,6 @@ export default defineConfig({
   timeout: 180_000,
   workers: 1,
   reporter: [["list"]],
-  use: { baseURL: process.env.LIFELINE_WEB_URL ?? "http://localhost:3000", viewport: { width: 1360, height: 900 }, deviceScaleFactor: 1 },
+  use: { baseURL: process.env.FLOWSENSE_WEB_URL ?? "http://localhost:3000", viewport: { width: 1360, height: 900 }, deviceScaleFactor: 1 },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 1360, height: 900 } } }],
 });

@@ -14,7 +14,7 @@ pypdf==6.20.1
 defusedxml==0.7.1
 tzdata==2026.5
 httpx==0.28.1
-# Live AI assistant (Anthropic Messages API; only used when LIFELINE_AI_MODE=live).
+# Live AI assistant (Anthropic Messages API; only used when FLOWSENSE_AI_MODE=live).
 anthropic==1.15.0
 httpx2==2.13.1
 httpcore2==2.13.1

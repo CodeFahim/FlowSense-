@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { item, login, password, resetTo, tab } from "./helpers";
 
 test("customer refusal: explained, no money moves, plan becomes infeasible, payroll stays blocked", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   await login(page);
   await resetTo(page, "Customer refuses the request");
 

@@ -1,4 +1,4 @@
-"""Test harness: real PostgreSQL (lifeline_test), fresh schema per run via Alembic.
+"""Test harness: real PostgreSQL (flowsense_test), fresh schema per run via Alembic.
 
 Each test seeds its own fixture business (the seed archives the previous one),
 so tests never share mutable state and nothing is deleted.
@@ -13,15 +13,15 @@ from typing import Any
 
 import pytest
 
-_test_url = os.environ.get("LIFELINE_TEST_DATABASE_URL")
+_test_url = os.environ.get("FLOWSENSE_TEST_DATABASE_URL")
 if not _test_url:
-    raise RuntimeError("Set LIFELINE_TEST_DATABASE_URL (scripts/test.ps1 does this).")
-os.environ["LIFELINE_DATABASE_URL"] = _test_url
-os.environ.setdefault("LIFELINE_ENV", "test")
-os.environ.setdefault("LIFELINE_DEMO_CONTROLS_ENABLED", "true")
-os.environ.setdefault("LIFELINE_FX_PROVIDER", "off")  # tests never call live rate providers
-os.environ.setdefault("LIFELINE_TRUSTED_PROXY_HOPS", "1")  # tests set X-Forwarded-For per simulated client
-os.environ.setdefault("LIFELINE_SIGNUPS_PER_HOUR", "1000")  # the suite creates >100 accounts; the production default stays 100
+    raise RuntimeError("Set FLOWSENSE_TEST_DATABASE_URL (scripts/test.ps1 does this).")
+os.environ["FLOWSENSE_DATABASE_URL"] = _test_url
+os.environ.setdefault("FLOWSENSE_ENV", "test")
+os.environ.setdefault("FLOWSENSE_DEMO_CONTROLS_ENABLED", "true")
+os.environ.setdefault("FLOWSENSE_FX_PROVIDER", "off")  # tests never call live rate providers
+os.environ.setdefault("FLOWSENSE_TRUSTED_PROXY_HOPS", "1")  # tests set X-Forwarded-For per simulated client
+os.environ.setdefault("FLOWSENSE_SIGNUPS_PER_HOUR", "1000")  # the suite creates >100 accounts; the production default stays 100
 
 from alembic.config import Config  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -33,14 +33,14 @@ from app.config import get_settings  # noqa: E402
 from app.db import get_sessionmaker  # noqa: E402
 
 HERE = os.path.dirname(os.path.dirname(__file__))
-OWNER = "demo@lifeline.example"
-STAFF = "demo-staff@lifeline.example"
+OWNER = "demo@flowsense.example"
+STAFF = "demo-staff@flowsense.example"
 OTHER = "owner@harbortea.example"
 
 
 @pytest.fixture(scope="session", autouse=True)
 def _schema() -> None:
-    assert "lifeline_test" in _test_url, "Refusing to run tests against a non-test database"
+    assert "flowsense_test" in _test_url, "Refusing to run tests against a non-test database"
     eng = create_engine(_test_url)
     with eng.begin() as c:
         c.execute(text("DROP SCHEMA public CASCADE; CREATE SCHEMA public;"))
@@ -82,7 +82,7 @@ def seed(scenario: str = "primary") -> uuid.UUID:
 @pytest.fixture
 def password() -> str:
     pw = get_settings().demo_password
-    assert pw is not None, "LIFELINE_DEMO_PASSWORD must be set for tests"
+    assert pw is not None, "FLOWSENSE_DEMO_PASSWORD must be set for tests"
     return pw.get_secret_value()
 
 

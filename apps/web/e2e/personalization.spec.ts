@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { approve, login, password, resetTo } from "./helpers";
 
 test.beforeEach(async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   await login(page);
 });
 

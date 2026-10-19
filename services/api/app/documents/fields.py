@@ -3,7 +3,7 @@
 Two readers, combined:
 - rules: labelled lines ("Invoice No:", "Bill To", "Total", "Business Name", ...), dates, amounts, emails.
   Always available, deterministic.
-- AI (when LIFELINE_AI_MODE=live and LIFELINE_AI_PROVIDER=gemini): the model is asked for the same fields
+- AI (when FLOWSENSE_AI_MODE=live and FLOWSENSE_AI_PROVIDER=gemini): the model is asked for the same fields
   as JSON. The document is passed as data with an explicit instruction to ignore any instructions in it;
   the model has no tools and its answer is validated and normalised here. A value the AI gives for a text
   document that can't be found in that text is marked low confidence.
@@ -24,7 +24,7 @@ from typing import Any
 
 from app.config import get_settings
 
-log = logging.getLogger("lifeline.documents")
+log = logging.getLogger("flowsense.documents")
 
 BUSINESS = {
     "name": "Business name",

@@ -15,12 +15,12 @@ from app.config import get_settings
 from app.errors import ApiError
 from app.models import AuthSession, Business, Membership, User
 
-SESSION_COOKIE = "lifeline_session"
+SESSION_COOKIE = "flowsense_session"
 
 # A short list of passwords that are always refused, on top of the length rule.
 _COMMON = {
     "password1234", "123456789012", "qwertyuiop12", "letmein12345", "iloveyou1234", "passwordpassword",
-    "welcome12345", "administrator", "1234567890123", "lifeline1234", "changeme1234",
+    "welcome12345", "administrator", "1234567890123", "flowsense1234", "changeme1234",
 }
 
 

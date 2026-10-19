@@ -25,10 +25,10 @@ from typing import Any
 
 import httpx
 
-BASE = os.environ.get("LIFELINE_BASE_URL", "http://127.0.0.1:8000")
-PASSWORD = os.environ["LIFELINE_DEMO_PASSWORD"]
+BASE = os.environ.get("FLOWSENSE_BASE_URL", "http://127.0.0.1:8000")
+PASSWORD = os.environ["FLOWSENSE_DEMO_PASSWORD"]
 OUT = Path(__file__).resolve().parent.parent / "evidence"
-OWNER, STAFF, OTHER = "demo@lifeline.example", "demo-staff@lifeline.example", "owner@harbortea.example"
+OWNER, STAFF, OTHER = "demo@flowsense.example", "demo-staff@flowsense.example", "owner@harbortea.example"
 CNY = 100
 
 ops: list[dict[str, Any]] = []

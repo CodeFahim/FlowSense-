@@ -147,7 +147,7 @@ def test_hosted_demo_configuration_guards():
 
     from app.config import Settings, normalize_database_url
 
-    base = {"database_url": "postgresql://u:p@db.internal/lifeline", "sandbox_event_secret": "x" * 40}
+    base = {"database_url": "postgresql://u:p@db.internal/flowsense", "sandbox_event_secret": "x" * 40}
     base = {**base, "trusted_proxy_hops": 1}
     ok = Settings(**base, env="hosted_demo", cookie_secure=True, demo_password="y" * 44)
     with _pytest.raises(ValidationError):
@@ -155,7 +155,7 @@ def test_hosted_demo_configuration_guards():
     unset = {k: v for k, v in base.items() if k != "trusted_proxy_hops"}
     assert Settings(**unset, trusted_proxy_hops=None, env="hosted_demo", cookie_secure=True, demo_password="y" * 44).proxy_hops == 1
     assert Settings(**unset, trusted_proxy_hops=None).proxy_hops == 0
-    assert ok.database_url == "postgresql+psycopg://u:p@db.internal/lifeline"
+    assert ok.database_url == "postgresql+psycopg://u:p@db.internal/flowsense"
     for bad in (
         {"cookie_secure": False, "demo_password": "y" * 44},
         {"cookie_secure": True, "demo_password": None},
@@ -179,7 +179,7 @@ def test_hosted_demo_configuration_guards():
 
 
 def test_demo_password_rotation_from_settings(password, monkeypatch):
-    """Changing LIFELINE_DEMO_PASSWORD and restarting rotates the demo accounts' password; data is untouched."""
+    """Changing FLOWSENSE_DEMO_PASSWORD and restarting rotates the demo accounts' password; data is untouched."""
     from pydantic import SecretStr
 
     from app.config import get_settings

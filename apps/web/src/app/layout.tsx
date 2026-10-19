@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 
 // Applies the saved appearance before first paint so the page does not flash.
 // The server-side preference is the source of truth; this is only a local cache of it.
-const THEME_BOOT = `(function(){try{var a=JSON.parse(localStorage.getItem("lifeline.appearance")||"{}");var t=a.theme||"system";if(t==="system"){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.dataset.theme=t;r.dataset.accent=a.accent||"teal"}catch(e){}})();`;
+const THEME_BOOT = `(function(){try{var a=JSON.parse(localStorage.getItem("flowsense.appearance")||"{}");var t=a.theme||"system";if(t==="system"){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.dataset.theme=t;r.dataset.accent=a.accent||"teal"}catch(e){}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

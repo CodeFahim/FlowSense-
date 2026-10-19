@@ -1,4 +1,4 @@
-# Builds and starts db + api + web in Docker. Data persists in the 'lifeline_pgdata' volume.
+# Builds and starts db + api + web in Docker. Data persists in the 'flowsense_pgdata' volume.
 # Usage: .\scripts\start.ps1    Then open http://localhost:3000
 # Native tools (docker, npm) write progress to stderr; rely on exit codes instead of Stop.
 $ErrorActionPreference = "Continue"

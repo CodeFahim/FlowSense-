@@ -205,7 +205,7 @@ function Shell({ children }: { children: ReactNode }) {
     };
     void boot(1);
     try {
-      setCollapsed(localStorage.getItem("lifeline.sidebar") === "collapsed");
+      setCollapsed(localStorage.getItem("flowsense.sidebar") === "collapsed");
     } catch {
       // ignore unavailable storage
     }
@@ -268,7 +268,7 @@ function Shell({ children }: { children: ReactNode }) {
   function toggleCollapsed() {
     setCollapsed((c) => {
       try {
-        localStorage.setItem("lifeline.sidebar", c ? "expanded" : "collapsed");
+        localStorage.setItem("flowsense.sidebar", c ? "expanded" : "collapsed");
       } catch {
         // ignore
       }

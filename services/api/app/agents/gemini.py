@@ -26,7 +26,7 @@ from app.agents.live import EMPTY_ANSWER, PAGES, SYSTEM_PROMPT, AIUnavailable, T
 from app.audit import chain as audit
 from app.config import get_settings
 
-log = logging.getLogger("lifeline.ai")
+log = logging.getLogger("flowsense.ai")
 API = "https://generativelanguage.googleapis.com/v1beta"
 
 # ------------------------------------------------------------------ transport (replaced in tests)
@@ -52,13 +52,13 @@ def _map_error(status: int, body: dict[str, Any]) -> AIUnavailable:
     reason = str(err.get("status", "")).upper()
     text = str(err.get("message", "")).lower()
     if status == 400 and ("api key" in text or reason == "UNAUTHENTICATED"):
-        return AIUnavailable("invalid_credentials", "The AI service rejected this server's API key. The operator needs to check LIFELINE_GEMINI_API_KEY.")
+        return AIUnavailable("invalid_credentials", "The AI service rejected this server's API key. The operator needs to check FLOWSENSE_GEMINI_API_KEY.")
     if status in (401,) or reason == "UNAUTHENTICATED":
-        return AIUnavailable("invalid_credentials", "The AI service rejected this server's API key. The operator needs to check LIFELINE_GEMINI_API_KEY.")
+        return AIUnavailable("invalid_credentials", "The AI service rejected this server's API key. The operator needs to check FLOWSENSE_GEMINI_API_KEY.")
     if status == 403:
         return AIUnavailable("permission", "The AI key is not allowed to use this model or this region. The operator needs to check the key and model.")
     if status == 404:
-        return AIUnavailable("model_not_found", "The configured AI model was not found. The operator needs to check LIFELINE_GEMINI_MODEL.")
+        return AIUnavailable("model_not_found", "The configured AI model was not found. The operator needs to check FLOWSENSE_GEMINI_MODEL.")
     if status == 429:
         return AIUnavailable("rate_limited", "The free AI quota is used up for now. Try again in a minute (or tomorrow if the daily limit was reached).")
     if status >= 500:

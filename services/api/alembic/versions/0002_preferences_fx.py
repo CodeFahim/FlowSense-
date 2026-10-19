@@ -47,7 +47,7 @@ def upgrade() -> None:
     # Rate provenance is append-only, like the other evidence tables.
     op.execute("""
     CREATE TRIGGER fx_rate_snapshots_append_only BEFORE UPDATE OR DELETE ON fx_rate_snapshots
-    FOR EACH ROW EXECUTE FUNCTION lifeline_reject_mutation();
+    FOR EACH ROW EXECUTE FUNCTION flowsense_reject_mutation();
     """)
 
 

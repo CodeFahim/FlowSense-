@@ -237,7 +237,7 @@ def get_document(doc_id: str, db: DB, ctx: Ctx = Depends(get_ctx)) -> dict[str, 
 def download(doc_id: str, db: DB, ctx: Ctx = Depends(get_ctx)) -> Response:
     d = _doc(db, ctx, doc_id)
     # Always a download with the type FlowSense detected (never the uploader's), never rendered inline.
-    name = f"lifeline-document-{str(d.id)[:8]}.{intake.EXT[d.kind]}"
+    name = f"flowsense-document-{str(d.id)[:8]}.{intake.EXT[d.kind]}"
     return Response(
         content=d.data,
         media_type=intake.KINDS[d.kind],

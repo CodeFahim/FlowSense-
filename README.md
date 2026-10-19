@@ -163,8 +163,8 @@ Set-ExecutionPolicy -Scope Process Bypass   # allow the project's scripts in thi
 
 ```bash
 cp .env.example .env
-# Edit .env: set POSTGRES_PASSWORD, LIFELINE_SANDBOX_EVENT_SECRET (32+ characters),
-# LIFELINE_DEMO_PASSWORD and LIFELINE_FRESH_ACCOUNT_PASSWORD (12+ characters each) to your own random values.
+# Edit .env: set POSTGRES_PASSWORD, FLOWSENSE_SANDBOX_EVENT_SECRET (32+ characters),
+# FLOWSENSE_DEMO_PASSWORD and FLOWSENSE_FRESH_ACCOUNT_PASSWORD (12+ characters each) to your own random values.
 docker compose up -d --build --wait
 ```
 
@@ -173,8 +173,8 @@ The API runs the database migrations and seeds the synthetic demo data automatic
 
 ### Five-minute tour
 
-1. Sign in as **demo@lifeline.example** with `LIFELINE_DEMO_PASSWORD` from `.env`
-   (`fresh@lifeline.example` starts an empty workspace).
+1. Sign in as **demo@flowsense.example** with `FLOWSENSE_DEMO_PASSWORD` from `.env`
+   (`fresh@flowsense.example` starts an empty workspace).
 2. **Dashboard:** 50,000 in the bank, payroll 80,000 due Friday, reserve 10,000 → **40,000 short**.
 3. **Ask AI:** "What are my options to cover payroll?"
 4. **Rescue plan:** the recommended collection and the rejected 39.70% loan.
@@ -186,8 +186,8 @@ The API runs the database migrations and seeds the synthetic demo data automatic
 ### Configuration
 
 All settings are documented in [`.env.example`](.env.example). Locally, the assistant runs **offline**
-(`LIFELINE_AI_MODE=demo`); set `LIFELINE_AI_MODE=live` with your own Anthropic or Gemini key for the live AI.
-Sign-up emails need an email provider (`LIFELINE_EMAIL_PROVIDER`). Never commit `.env`.
+(`FLOWSENSE_AI_MODE=demo`); set `FLOWSENSE_AI_MODE=live` with your own Anthropic or Gemini key for the live AI.
+Sign-up emails need an email provider (`FLOWSENSE_EMAIL_PROVIDER`). Never commit `.env`.
 
 ## Tests
 
@@ -243,4 +243,4 @@ American International University-Bangladesh (AIUB)
 | Faysal Mahmud | 23-54032-3@student.aiub.edu |
 | Nahian Islam Rishad | 23-54466-3@student.aiub.edu |
 
-*Code name in the source: Lifeline. Sample business, people and documents are fictional.*
+*The sample business, people and documents are fictional.*

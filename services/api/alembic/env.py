@@ -13,7 +13,7 @@ target_metadata = Base.metadata
 
 
 def _url() -> str:
-    return normalize_database_url(os.environ.get("ALEMBIC_DATABASE_URL") or os.environ["LIFELINE_DATABASE_URL"])
+    return normalize_database_url(os.environ.get("ALEMBIC_DATABASE_URL") or os.environ["FLOWSENSE_DATABASE_URL"])
 
 
 def run_migrations_online() -> None:

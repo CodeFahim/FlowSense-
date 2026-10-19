@@ -6,7 +6,7 @@ const EMAIL_LOCAL = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~
 const EMAIL_LABEL = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 const TLD = /^(?:[a-z]{2,63}|xn--[a-z0-9-]{1,59})$/;
 const USERNAME = /^[a-z0-9][a-z0-9._-]{1,28}[a-z0-9]$/;
-const RESERVED = new Set(["admin", "administrator", "root", "support", "help", "lifeline", "flowsense", "system", "owner", "staff", "demo", "fresh", "security", "api", "null", "undefined"]);
+const RESERVED = new Set(["admin", "administrator", "root", "support", "help", "flowsense", "system", "owner", "staff", "demo", "fresh", "security", "api", "null", "undefined"]);
 
 export function emailProblem(raw: string): string | null {
   const email = raw.trim().toLowerCase();

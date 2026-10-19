@@ -38,7 +38,7 @@ def _snapshot(req):
     for m in req["messages"]:
         if isinstance(m["content"], list):
             for b in m["content"]:
-                if b.get("type") == "tool_result" and b.get("tool_use_id") == "toolu_lifeline_snapshot":
+                if b.get("type") == "tool_result" and b.get("tool_use_id") == "toolu_flowsense_snapshot":
                     return json.loads(b["content"])
     raise AssertionError("snapshot not sent")
 

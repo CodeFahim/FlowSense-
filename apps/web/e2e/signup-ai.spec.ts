@@ -80,7 +80,7 @@ test("sign-up validates each step inline and keeps the user's input", async ({ p
 });
 
 test("phone: the AI quick actions work from Home and answer from the user's records", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   await page.setViewportSize({ width: 360, height: 780 });
   await login(page);
   await resetTo(page, "Standard rescue");

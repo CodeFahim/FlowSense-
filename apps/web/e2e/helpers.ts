@@ -1,9 +1,9 @@
 import { expect, type Page } from "@playwright/test";
 
-export const password = process.env.LIFELINE_DEMO_PASSWORD;
+export const password = process.env.FLOWSENSE_DEMO_PASSWORD;
 
 /** Signs in as the owner (or another demo user) and finishes the first-run welcome steps if they appear. */
-export async function login(page: Page, email = "demo@lifeline.example") {
+export async function login(page: Page, email = "demo@flowsense.example") {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(password!);

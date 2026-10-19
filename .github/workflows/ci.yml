@@ -23,21 +23,21 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: lifeline
+          POSTGRES_USER: flowsense
           POSTGRES_PASSWORD: ci-only-password
-          POSTGRES_DB: lifeline_test
+          POSTGRES_DB: flowsense_test
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U lifeline -d lifeline_test"
+          --health-cmd "pg_isready -U flowsense -d flowsense_test"
           --health-interval 5s --health-timeout 3s --health-retries 20
     env:
       # CI-only throwaway values; no real financial or AI secrets are needed.
-      LIFELINE_TEST_DATABASE_URL: postgresql+psycopg://lifeline:ci-only-password@localhost:5432/lifeline_test
-      LIFELINE_DATABASE_URL: postgresql+psycopg://lifeline:ci-only-password@localhost:5432/lifeline_test
-      LIFELINE_SANDBOX_EVENT_SECRET: ci-only-sandbox-secret-not-used-anywhere-else
-      LIFELINE_DEMO_PASSWORD: ci-only-demo-password
-      LIFELINE_ENV: test
-      LIFELINE_AI_MODE: demo
+      FLOWSENSE_TEST_DATABASE_URL: postgresql+psycopg://flowsense:ci-only-password@localhost:5432/flowsense_test
+      FLOWSENSE_DATABASE_URL: postgresql+psycopg://flowsense:ci-only-password@localhost:5432/flowsense_test
+      FLOWSENSE_SANDBOX_EVENT_SECRET: ci-only-sandbox-secret-not-used-anywhere-else
+      FLOWSENSE_DEMO_PASSWORD: ci-only-demo-password
+      FLOWSENSE_ENV: test
+      FLOWSENSE_AI_MODE: demo
     defaults:
       run:
         working-directory: services/api
@@ -86,17 +86,17 @@ jobs:
         run: |
           {
             echo "POSTGRES_PASSWORD=$(openssl rand -hex 16)"
-            echo "LIFELINE_ENV=development"
-            echo "LIFELINE_SANDBOX_EVENT_SECRET=$(openssl rand -hex 32)"
-            echo "LIFELINE_DEMO_PASSWORD=Demo-$(openssl rand -hex 12)"
-            echo "LIFELINE_FRESH_ACCOUNT_PASSWORD=Fresh-$(openssl rand -hex 12)"
-            echo "LIFELINE_DEMO_CONTROLS_ENABLED=true"
-            echo "LIFELINE_COOKIE_SECURE=false"
-            echo "LIFELINE_AI_MODE=demo"
-            echo "LIFELINE_FX_PROVIDER=off"  # CI never depends on a live exchange-rate provider
+            echo "FLOWSENSE_ENV=development"
+            echo "FLOWSENSE_SANDBOX_EVENT_SECRET=$(openssl rand -hex 32)"
+            echo "FLOWSENSE_DEMO_PASSWORD=Demo-$(openssl rand -hex 12)"
+            echo "FLOWSENSE_FRESH_ACCOUNT_PASSWORD=Fresh-$(openssl rand -hex 12)"
+            echo "FLOWSENSE_DEMO_CONTROLS_ENABLED=true"
+            echo "FLOWSENSE_COOKIE_SECURE=false"
+            echo "FLOWSENSE_AI_MODE=demo"
+            echo "FLOWSENSE_FX_PROVIDER=off"  # CI never depends on a live exchange-rate provider
           } > .env
           # Mask the generated values in the job log.
-          grep -E '^(POSTGRES_PASSWORD|LIFELINE_SANDBOX_EVENT_SECRET|LIFELINE_DEMO_PASSWORD|LIFELINE_FRESH_ACCOUNT_PASSWORD)=' .env | while IFS='=' read -r _ v; do echo "::add-mask::$v"; done
+          grep -E '^(POSTGRES_PASSWORD|FLOWSENSE_SANDBOX_EVENT_SECRET|FLOWSENSE_DEMO_PASSWORD|FLOWSENSE_FRESH_ACCOUNT_PASSWORD)=' .env | while IFS='=' read -r _ v; do echo "::add-mask::$v"; done
 
       - name: Build and start db + api + web (waits for health checks)
         run: docker compose up -d --build --wait

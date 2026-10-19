@@ -14,7 +14,7 @@ from argon2.exceptions import InvalidHashError, VerificationError, VerifyMismatc
 
 _hasher = PasswordHasher()
 # Used to spend comparable time when the email does not exist.
-_DUMMY_HASH = _hasher.hash("lifeline-dummy-password")
+_DUMMY_HASH = _hasher.hash("flowsense-dummy-password")
 
 
 def hash_password(password: str) -> str:

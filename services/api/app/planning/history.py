@@ -47,7 +47,7 @@ def _source(e: JournalEntry) -> str:
     if e.source_type == "reversal":
         return "Correction"
     # Older ledger lines (append-only) still carry the previous product name.
-    if "outside FlowSense" in e.memo or "outside Lifeline" in e.memo:
+    if "outside FlowSense" in e.memo:
         return "Recorded by you (paid outside FlowSense, not bank-verified)"
     if e.source_type == "transfer":
         return "Sandbox bank (signed settlement)"

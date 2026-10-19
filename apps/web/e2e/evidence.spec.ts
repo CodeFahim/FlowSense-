@@ -5,7 +5,7 @@ import { login, password, resetTo } from "./helpers";
 const samples = path.resolve(__dirname, "..", "..", "..", "samples", "evidence");
 
 test("PDF evidence: upload, duplicate, scanned and fake files, persistence after reload", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   await login(page);
   await resetTo(page, "Standard rescue");
   await page.goto("/money-in");

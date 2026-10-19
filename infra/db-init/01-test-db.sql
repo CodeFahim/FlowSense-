@@ -1,2 +1,2 @@
 -- Separate database for the automated test suite (never used by the demo).
-CREATE DATABASE lifeline_test OWNER lifeline;
+CREATE DATABASE flowsense_test OWNER flowsense;

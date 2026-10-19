@@ -39,7 +39,7 @@ def _key() -> bytes:
     s = get_settings()
     base = s.sandbox_event_secret.get_secret_value() if s.sandbox_event_secret else ""
     # A key derived for this purpose only; never the event-signing key itself.
-    return hashlib.sha256(("lifeline-email-codes|" + base).encode()).digest()
+    return hashlib.sha256(("flowsense-email-codes|" + base).encode()).digest()
 
 
 def _digest(user_id: str, purpose: str, salt: str, code: str) -> str:

@@ -130,7 +130,7 @@ def test_clean_journey_gap_from_recorded_figures_only():
     assert dup.status_code == 409
 
 
-def test_payments_recorded_outside_lifeline_go_through_signed_events():
+def test_payments_recorded_outside_flowsense_go_through_signed_events():
     api = _new_user()
     _configured(api)
     today = datetime.now(ZoneInfo("Asia/Dhaka")).date()

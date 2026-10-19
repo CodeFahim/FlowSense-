@@ -31,9 +31,9 @@ _IP = re.compile(r"^[0-9A-Fa-f:.]{2,45}$")
 def client_ip(request: Request) -> str:
     """Client address for rate limiting.
 
-    1. If the request carries the shared LIFELINE_PROXY_SECRET (added by the web frontend's proxy.ts),
+    1. If the request carries the shared FLOWSENSE_PROXY_SECRET (added by the web frontend's proxy.ts),
        the client IP that proxy saw (Vercel overwrites its forwarding headers) is used.
-    2. Otherwise the entry LIFELINE_TRUSTED_PROXY_HOPS places from the right of X-Forwarded-For: it was
+    2. Otherwise the entry FLOWSENSE_TRUSTED_PROXY_HOPS places from the right of X-Forwarded-For: it was
        appended by our own proxy (Render) and cannot be forged by the caller. With hops=0, the socket peer.
     IP limits are always combined with per-account and global limits and never trusted alone.
     """
@@ -41,9 +41,9 @@ def client_ip(request: Request) -> str:
 
     s = get_settings()
     secret = s.proxy_secret.get_secret_value() if s.proxy_secret else ""
-    sent = request.headers.get("x-lifeline-proxy-secret", "")
+    sent = request.headers.get("x-flowsense-proxy-secret", "")
     if secret and sent and hmac.compare_digest(sent, secret):
-        claimed = request.headers.get("x-lifeline-client-ip", "").strip()
+        claimed = request.headers.get("x-flowsense-client-ip", "").strip()
         if _IP.match(claimed):
             return claimed
     hops = s.proxy_hops

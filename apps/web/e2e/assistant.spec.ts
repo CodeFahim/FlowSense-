@@ -8,7 +8,7 @@ function failOnPageErrors(page: Page): string[] {
 }
 
 test("AI assistant answers the starter questions and typed requests; adversarial request is denied", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   const errors = failOnPageErrors(page);
   await login(page);
   await resetTo(page, "Prompt injection in evidence");
@@ -52,7 +52,7 @@ test("AI assistant answers the starter questions and typed requests; adversarial
 });
 
 test("every main page renders without browser errors", async ({ page }) => {
-  test.skip(!password, "Set LIFELINE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
+  test.skip(!password, "Set FLOWSENSE_DEMO_PASSWORD (scripts/e2e.ps1 does this)");
   const errors = failOnPageErrors(page);
   await login(page);
   await resetTo(page, "Standard rescue");

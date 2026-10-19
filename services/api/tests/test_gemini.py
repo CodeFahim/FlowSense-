@@ -239,7 +239,7 @@ def test_gemini_health_and_config(gem, as_owner):
     assert bad.json()["status"] == "invalid_credentials" and KEY not in bad.text
     st = owner.get("/api/assistant/status").json()
     assert st["provider"] == "gemini" and st["model"] == "gemini-flash-test"
-    with pytest.raises(ValidationError, match="LIFELINE_GEMINI_API_KEY"):
+    with pytest.raises(ValidationError, match="FLOWSENSE_GEMINI_API_KEY"):
         Settings(ai_mode="live", ai_provider="gemini", gemini_model="m")
 
 

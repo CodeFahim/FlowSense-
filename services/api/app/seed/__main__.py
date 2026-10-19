@@ -26,7 +26,7 @@ def main() -> None:
         if retired:
             print(f"Archived {retired} pre-release demo fixture business(es); nothing was deleted.")
         if ensure_fresh_account(db) is None:
-            print("LIFELINE_FRESH_ACCOUNT_PASSWORD is not set: the designated clean account is not created.")
+            print("FLOWSENSE_FRESH_ACCOUNT_PASSWORD is not set: the designated clean account is not created.")
         if only_if_missing:
             exists = db.execute(select(Business.id).where(Business.fixture_key == FIXTURE_KEY, Business.archived_at.is_(None))).first()
             if exists:
