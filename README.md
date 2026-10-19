@@ -9,7 +9,9 @@
 > the owner approves one exact payment — checked by a safety engine, paid exactly once, and proven with receipts and a
 > tamper-evident audit trail.
 
-**Live sandbox:** **https://flowsense-rescue.vercel.app** · sign-in details are in our private submission notes.
+**Live sandbox:** **https://flowsense-rescue.vercel.app** · create an account with your email (the 6-digit code may land
+in spam), then on the welcome screen choose **Try the demo → Open sample** for your own private copy of the sample
+business. A backup sign-in is in our submission notes.
 The free hosting sleeps when idle: the first visit can take up to a minute ("FlowSense is waking up…").
 
 ![FlowSense dashboard: one sentence states the gap](docs/images/dashboard.png)
