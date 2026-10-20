@@ -14,6 +14,9 @@ in spam), then on the welcome screen choose **Try the demo → Open sample** for
 business. A backup sign-in is in our submission notes.
 The free hosting sleeps when idle: the first visit can take up to a minute ("FlowSense is waking up…").
 
+**Documentation:** [Technical documentation](TECHNICAL_DOC.md) (architecture, core algorithms, security design) ·
+[Security self-assessment report](SECURITY_SELF_ASSESSMENT_REPORT.md) (permission tiers, threat model, known risks)
+
 ![FlowSense dashboard: one sentence states the gap](docs/images/dashboard.png)
 
 ---
