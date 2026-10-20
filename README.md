@@ -2,8 +2,6 @@
 
 [![CI](https://github.com/CodeFahim/FlowSense-/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeFahim/FlowSense-/actions/workflows/ci.yml)
 
-**2026 Shenzhen International FinTechathon · International Track · Topic E: SME Finance Copilot · Team Decimal Point (AIUB)**
-
 > *Payroll is Friday. The money isn't there.*
 > FlowSense finds the exact cash gap, picks the cheapest fix that keeps the owner's rules, and moves money only after
 > the owner approves one exact payment — checked by a safety engine, paid exactly once, and proven with receipts and a
@@ -11,7 +9,7 @@
 
 **Live sandbox:** **https://flowsense-rescue.vercel.app** · create an account with your email (the 6-digit code may land
 in spam), then on the welcome screen choose **Try the demo → Open sample** for your own private copy of the sample
-business. A backup sign-in is in our submission notes.
+business.
 The free hosting sleeps when idle: the first visit can take up to a minute ("FlowSense is waking up…").
 
 **Documentation:** [Technical documentation](TECHNICAL_DOC.md) (architecture, core algorithms, security design) ·
@@ -94,13 +92,16 @@ rules* — so the AI can explain the result but **cannot change it**.
   CSRF, a customer refusing, and the full rescue in USD.
 - **223 backend tests** on real PostgreSQL and **38 browser journeys** (Playwright) run on **every push** in CI.
 
-## How FlowSense meets the judging criteria
+## Security at a glance
 
-| Criterion | What to look at |
-|---|---|
-| **Task completion (40%)** — Topic E: financing-option matching, cash-flow management with alerts, business financial analysis | Dated funding gap from settled cash; rescue planner comparing collection, financing (cost vs. policy cap) and supplier extension; 7–60 day forecast and what-if; approvals, simulated settlement, receipts; AI analysis of the business; 12-month sales forecast; document reader that fills forms |
-| **Security & compliance (30%)** | Independent safety kernel at propose / approve / execute; approvals bound to amount, recipient version and policy version (single use, 30 min); exactly-once execution; cash changes only on HMAC-signed settlement; append-only ledger, receipts and hash-chained audit enforced by database triggers; tenant isolation (404 for other tenants), CSRF, Argon2id, rate limits |
-| **Innovation & interaction (30%)** | An AI copilot that is *allowed to say no*: option classes decided by code, a rule guard on every live answer, confirm-to-act suggestions; documents treated as data, never instructions; 155 currencies; plain-language, mobile-friendly UI |
+- An **independent safety kernel** checks every money action at propose, approve and execute.
+- **Approvals are bound** to the exact amount, recipient version and policy version; they are single-use and expire
+  after 30 minutes.
+- **Exactly-once execution:** idempotency keys, a per-business lock and one-time approval consumption.
+- **Cash changes only on HMAC-signed settlement events**; promises and documents never change balances.
+- **Append-only ledger, receipts and hash-chained audit log**, enforced by database triggers and verifiable on demand.
+- **Tenant isolation** (other businesses' data returns 404), CSRF protection, Argon2id passwords, rate limits.
+- Details: [Security self-assessment report](SECURITY_SELF_ASSESSMENT_REPORT.md).
 
 ## How it works
 
